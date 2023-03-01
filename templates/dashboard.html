@@ -1,0 +1,219 @@
+<div class="container">
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+        document.addEventListener("click", function (event) 
+      {
+        // Checking if the button was clicked
+        if (!event.target.matches("#button1")) return;
+      
+        fetch("https://paperquotes.p.rapidapi.com/quotes", 
+        {
+	    "method": "GET",
+	    "headers": 
+        {
+		    "authorization": "undefined",
+		    "x-rapidapi-host": "paperquotes.p.rapidapi.com",
+		    "x-rapidapi-key": "b7945b4225mshd156892f0d71cccp18fb97jsne9b3666b50a0"
+	    }
+        })
+          .then((response) => response.json())
+          .then((results) => renderJoke(data))
+          .catch(() => renderError());
+      });
+      
+      function renderJoke(data) {
+        const setup = document.getElementById("setup");
+        const punchline = document.getElementById("punchline");
+        setup.innerHTML = data.quote;
+        punchline.innerHTML = data.author;
+      }
+      function renderError() {
+            const error = document.getElementById("error");
+            error.innerHTML = "Whoops, something went wrong. Please try again later!";
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel" style="margin-left: 200px;">Inspire</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="setup"></p>
+                <p id="punchline"></p>
+                <p id="error"></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="button1" class="btn btn-success">Generate Quote</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/ff4aad7d9e.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&family=Kanit:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Motto - Health Tracker</title>
+  </head>
+  <body>
+    <nav class="navbar sticky-top navbar-custom navbar-expand-lg" style="border-bottom: 1px solid;">
+        <div class="container-fluid">
+          <a class="navbar-brand" style="font-size: 45px; font-family: 'Kanit', sans-serif; text-align: center; color: rgb(34, 85, 252);" href = "/">motto</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav" style="margin-top:12px; font-size:17px;">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/user/{{uuname}}">TrackerManagement</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logging/{{uuname}}">Logging</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/settings/{{uuname}}">Settings</a>
+              </li>
+            </ul>
+          </div>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <button class="btn btn-outline-success me-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" id="quotes">Inspire</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Sign Out&nbsp{{uuname[0]|upper}}{{uuname[1:]}}</button>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <div><p style="font-family: 'Fredoka', sans-serif; font-size: 20px; text-align:center; border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid;">Tracker Dashboard</p></div><br></p></div>
+    {% if tid!=None %}
+    <div class="container">
+      <div class="row">
+        <div class="col" style="height: 400px; width: 300px;">
+          <canvas id="myChart1"></canvas>
+          <script>
+            const ctx1 = document.getElementById('myChart1').getContext('2d');
+            const myChart1 = new Chart(ctx1, {
+            type: 'line',
+            data:  {
+                labels: {{ date | tojson | safe }},
+                datasets: [{
+                    label: "{{labels}}",
+                    data: {{ data | tojson | safe }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                animations: {
+                  tension: {
+                    duration: 1000,
+                    easing: 'linear',
+                    from: 1,
+                    to: 0,
+                    loop: true
+                  }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+          </script>
+        </div>
+        <div class="col" style="height: 400px; width: 300px;">
+          <canvas id="myChart2"></canvas>
+          <script>
+            const ctx2 = document.getElementById('myChart2').getContext('2d');
+            const myChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: {{ date | tojson | safe }},
+                datasets: [{
+                    label: "{{labels}}",
+                    data: {{ data | tojson | safe }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+          </script>
+        </div>
+      </div>
+    </div>
+    <div><p><br></p></div>
+    {% endif %}
+    <form action="/dashboard/{{uuname}}" method='POST'>
+      <div style="margin-left: 90px; margin-right: 90px;">
+        <select class="form-select" name="dash" aria-label="Disabled select example" style="font-size: 17px; font-family: 'Fredoka', sans-serif; background-color: grey;text-align:center;">
+          <option selected disabled style="background-color:grey;">Select Tracker ID</option>
+          {% for row in rows %}
+          <option value="{{row[0]}}" style="background-color:white;">{{row[0]}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div style="margin-left: 588px; margin-top: 10px;">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+    </div>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,11 @@
+.navbar-custom {
+    background-color: white;
+}
+.navbar-custom .navbar-text,
+.navbar-custom .navbar-brand {
+    color: rgb(137,77,255);
+}
+.nav-link {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 20px;
+}
